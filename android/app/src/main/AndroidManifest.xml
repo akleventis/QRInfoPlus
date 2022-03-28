@@ -2,6 +2,9 @@
   package="com.qrinfoplus">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Required https://bit.ly/3uAj0td -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
       android:name=".MainApplication"
