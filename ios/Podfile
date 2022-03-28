@@ -3,11 +3,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-# https://react-native-camera.github.io/react-native-camera/docs/installation#modifying-podfile
-pod 'react-native-camera', path: '../node_modules/react-native-camera', subspecs: [
-  'BarcodeDetectorMLKit'
-]
-
 target 'QRInfoPlus' do
   config = use_native_modules!
 
