@@ -1,10 +1,11 @@
 
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useAuthRequest } from 'expo-auth-session';
-import { setItemAsync } from 'expo-secure-store';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CLIENT_ID, CLIENT_SECRET } from '../../config/secrets';
+import { CLIENT_ID } from '../../config/secrets';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { authorize } from '../../actions/actionCreators'
 
 type RootStackParamList = {
     Login: undefined;
@@ -13,37 +14,9 @@ type RootStackParamList = {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const getAccessToken = async (code: string) => {
-    let form = {
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET, // TODO: store this more securely?
-        'code': code,
-        'redirect_uri': 'exp://127.0.0.1:19000/',
-    }
-
-    const formBody = Object.entries(form).map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value)).join('&')
-
-    fetch('https://api-ssl.bitly.com/oauth/access_token', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody
-    }).then(response => {
-        if (!response.ok) {
-            console.log('Access token request failed');
-        }
-        return response.json();
-    })
-        .then(json => {
-            const { access_token } = json;
-            setItemAsync('access_token', access_token);
-        });
-}
-
 
 export default function Login({ navigation }: Props) {
+    const dispatch = useDispatch();
     const discovery = {
         authorizationEndpoint: "https://bitly.com/oauth/authorize",
     };
@@ -56,9 +29,8 @@ export default function Login({ navigation }: Props) {
     useEffect(() => {
         if (response?.type === "success") {
             const { code } = response.params
-            getAccessToken(code).then(() => {
-                navigation.navigate('Home');
-            })
+            dispatch(authorize(code))
+            navigation.navigate('Home')
         }
     }, [response])
 

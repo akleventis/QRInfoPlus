@@ -1,8 +1,11 @@
 
 import { StyleSheet, Text, View, Button } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getItemAsync } from 'expo-secure-store';
-import { useState } from 'react';
+import { useTypedSelector } from '../../hooks/useTypeSelector'
+import { useDispatch } from 'react-redux';
+import { disconnect, loadAuth } from '../../actions/actionCreators'
+import { useEffect } from 'react';
+
 
 
 type RootStackParamList = {
@@ -15,22 +18,27 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 
 export default function Home({ navigation }: Props) {
-    const getToken = () => {
-        getItemAsync('access_token').then((token) => {
-            if (token !== null) {
-                setToken(token)
-            }
-        })
-        return ''
-    }
-    const [token, setToken] = useState(getToken());
+    const { auth } = useTypedSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // attempt to load auth info from secure store
+        if (auth.accessToken === '' && auth.login === '') {
+            dispatch(loadAuth())
+        }
+    }, [])
+
     return (
         <View style={styles.container}>
-            {token === '' && <Button
+            {auth.accessToken === '' && <Button
                 title="Connect your Bitly Account"
                 onPress={() => navigation.navigate('Login')}
             />}
-            {token !== '' && <Text>Your Bitly account is connected!</Text>}
+            {auth.accessToken !== '' && <Text>Hello {auth.login}, your Bitly account is connected!</Text>}
+            {auth.accessToken !== '' && <Button
+                title="Disconnect"
+                onPress={() => dispatch(disconnect())}
+            />}
             <Button
                 title="Scan QR Code"
                 onPress={() => navigation.navigate('Scan')}
