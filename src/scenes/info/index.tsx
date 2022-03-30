@@ -26,7 +26,6 @@ const handleBitlink = async (link: URL, auth: Auth): Promise<linkInfo[]> => {
             {text: 'Expand:', data: 'Connect Bitly account to expand'}
         ]
     }
-    console.debug(auth.accessToken)
     var data
     try {
         const resp = await axios.post(`${bitlyURL}/expand`, { 'bitlink_id': bitlink }, {
