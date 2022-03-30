@@ -32,7 +32,7 @@ export const authReducer = (state: State = initialState, action: Action): State 
             return {
                 auth: {
                     login: action.payload.login,
-                    accessToken: action.payload.login,
+                    accessToken: action.payload.accessToken,
                 }
             }
         default:

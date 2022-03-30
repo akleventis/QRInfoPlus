@@ -6,11 +6,6 @@ export enum ActionType {
     AUTH_AUTHORIZE = 'AUTH_AUTHORIZE',
 }
 
-interface actionAuthAuthorize {
-    type: ActionType.AUTH_AUTHORIZE;
-    payload: string;
-}
-
 interface actionAuthConnect {
     type: ActionType.AUTH_CONNECT;
     payload: Auth;

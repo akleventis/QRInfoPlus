@@ -2,53 +2,51 @@
 import { StyleSheet, Text, View, Button, Linking } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import axios from 'axios'
+import { useTypedSelector } from '../../hooks/useTypeSelector'
 import { URL } from 'react-native-url-polyfill';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { Auth } from '../../reducers/authReducer';
 
 const googleDNS = `https://dns.google/resolve`
 const bitlyURL = `https://api-ssl.bitly.com/v4`
 const bitlyAddresses = [`cname.bitly.com.`, `67.199.248.13`, `67.199.248.12`]
-const authToken = `82f2f38e4c48531c3d2bd4c1d89bcdc58679b185`
 
 interface linkInfo {
     text: string,
     data: string
 }
 
-const handleBitlink = async (bitlink: string): Promise<linkInfo[]> => {
+const handleBitlink = async (link: URL, auth: Auth): Promise<linkInfo[]> => {
+    const bitlink = `${link.host}${link.pathname}`
+    if (auth.accessToken === '') {
+        return [
+            {text: 'Raw Decode:', data: link.toString()},
+            {text: 'Type:', data: 'URL'},
+            {text: 'Expand:', data: 'Connect Bitly account to expand'}
+        ]
+    }
+    console.debug(auth.accessToken)
     var data
     try {
         const resp = await axios.post(`${bitlyURL}/expand`, { 'bitlink_id': bitlink }, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${auth.accessToken}`
             }
         });
         data = [
-            { text: 'Raw Decode:', data: bitlink },
+            { text: 'Raw Decode:', data: link.toString() },
             { text: 'Type:', data: 'URL' },
             { text: 'Created:', data: resp.data['created_at'] },
             { text: 'ID:', data: resp.data['id'] },
-            { text: 'Link:', data: resp.data['link'] },
+            { text: 'Link:', data: link.toString() },
             { text: 'Long url:', data: resp.data['long_url'] }
         ]
     } catch (err) {
         return [{ text: 'handleBitlinkErr', data: `${err}` }]
     }
 
-    // try {
-    //     const resp = await axios.post(`${bitlyURL}/shareable_reports`, { 'bitlink_id': bitlink }, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${authToken}`
-    //         }
-    //     });
-    //     data.push({ text: 'Sharable Report:', data: resp.data['shareable_report_link']})
-    // } catch (err) {
-    // console.warn(err)
-    // }
-    data.push({ text: 'Sharable Report:', data: 'https://bitly.report/3Dw1Yk3' })
     return data
 }
 
@@ -123,7 +121,7 @@ const handleWIFI = (link: string) => {
 
 // Handles [Bitlinks, URL's, MeCard, Phone Number, SMS, Email, WiFi, Text]
 // All other types ei [vCard, Event, SEPA, ...etc] will display as raw text
-const handleQR = async (link: string): Promise<linkInfo[]> => {
+const handleQR = async (link: string, auth: Auth): Promise<linkInfo[]> => {
     if (link.startsWith('http')) {
         const x = new URL(link)
 
@@ -131,8 +129,7 @@ const handleQR = async (link: string): Promise<linkInfo[]> => {
 
         for (let obj of response.data[`Answer`]) {
             if (bitlyAddresses.includes(obj[`data`])) {
-                const bitlink = `${x.host}${x.pathname}`
-                return handleBitlink(bitlink)
+                return handleBitlink(x, auth)
             }
         }
         return [{ text: 'QR Link to ', data: link }]
@@ -142,12 +139,13 @@ const handleQR = async (link: string): Promise<linkInfo[]> => {
     if (link.toLowerCase().startsWith('smsto')) return handleSMS(link)
     if (link.toLowerCase().startsWith('mailto')) return handleEmail(link)
     if (link.toLowerCase().startsWith('wifi')) return handleWIFI(link)
-    return [{ text: 'Raw Decode: ', data: link }]
+    return [{ text: 'Raw Decode:', data: link }]
 }
 
 type RootStackParamList = {
     Info: { qrURL: string };
     Home: undefined;
+    Login: undefined;
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Info'>;
@@ -155,9 +153,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Info'>;
 export default function Info({ route, navigation }: Props) {
     const props = route.params
     const [bitlinkInfo, setBitlinkInfo] = useState<Array<linkInfo>>([])
+    const { auth } = useTypedSelector((state) => state.auth);
 
     useEffect(() => {
-        handleQR(props.qrURL)
+        handleQR(props.qrURL, auth)
             .then(data => setBitlinkInfo(data))
     }, [])
 
@@ -165,10 +164,13 @@ export default function Info({ route, navigation }: Props) {
     return (
         <View style={styles.container}>
             {bitlinkInfo.map(e => (
-                e.text === 'Sharable Report:'
+                e.text === 'Link:' 
                     ? (<Text key={`k-${e.text}`}>{e.text} <Text onPress={() => Linking.openURL(e.data)}>{e.data}</Text></Text>) :
                     <Text key={`k-${e.text}`}>{e.text} {e.data}</Text>
             ))}
+            {auth.accessToken === "" && <Button
+                title="Connect your Bitly Account" 
+                onPress={() => navigation.navigate('Login')}/>}
             <Button
                 title='Return to Home'
                 onPress={() => navigation.navigate('Home')}
