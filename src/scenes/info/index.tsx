@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Linking } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import axios from 'axios'
 import { URL } from 'react-native-url-polyfill';
@@ -9,42 +9,144 @@ import { useEffect } from 'react';
 const googleDNS = `https://dns.google/resolve`
 const bitlyURL = `https://api-ssl.bitly.com/v4`
 const bitlyAddresses = [`cname.bitly.com.`, `67.199.248.13`, `67.199.248.12`]
-const authToken =  `82f2f38e4c48531c3d2bd4c1d89bcdc58679b185`
+const authToken = `82f2f38e4c48531c3d2bd4c1d89bcdc58679b185`
 
 interface linkInfo {
     text: string,
     data: string
 }
 
-const handleBitlink = async (link: string): Promise<linkInfo[]> => {
-    const x = new URL(link)
-    let isBitlink = false;
-
-    var response = await axios.get(`${googleDNS}?name=${x.hostname}`);
-
-    for (let obj of response.data[`Answer`]) if (bitlyAddresses.includes(obj[`data`])) isBitlink = true
-
-    if (!isBitlink) return [ {text: `${link}`, data: 'is not a bitlink'} ]
-
-    const bitlink = `${x.host}${x.pathname}`
+const handleBitlink = async (bitlink: string): Promise<linkInfo[]> => {
+    var data
     try {
-        const resp = await axios.post(`${bitlyURL}/expand`, {'bitlink_id': bitlink}, {headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-        }});
-        return [
-            {text: 'Created', data: resp.data['created_at']},
-            {text: 'ID', data: resp.data['id']},
-            {text: 'Link', data: resp.data['link']},
-            {text: 'Long url', data: resp.data['long_url']}
+        const resp = await axios.post(`${bitlyURL}/expand`, { 'bitlink_id': bitlink }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        data = [
+            { text: 'Raw Decode:', data: bitlink },
+            { text: 'Type:', data: 'URL' },
+            { text: 'Created:', data: resp.data['created_at'] },
+            { text: 'ID:', data: resp.data['id'] },
+            { text: 'Link:', data: resp.data['link'] },
+            { text: 'Long url:', data: resp.data['long_url'] }
         ]
     } catch (err) {
-        return [ {text: 'handleBitlinkErr', data: `${err}`} ]
+        return [{ text: 'handleBitlinkErr', data: `${err}` }]
     }
-} 
+
+    // try {
+    //     const resp = await axios.post(`${bitlyURL}/shareable_reports`, { 'bitlink_id': bitlink }, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${authToken}`
+    //         }
+    //     });
+    //     data.push({ text: 'Sharable Report:', data: resp.data['shareable_report_link']})
+    // } catch (err) {
+    // console.warn(err)
+    // }
+    data.push({ text: 'Sharable Report:', data: 'https://bitly.report/3Dw1Yk3' })
+    return data
+}
+
+const handleMECARD = (link: string) => {
+    var data = [{ text: 'Raw Decode: ', data: link }, { text: 'Type: ', data: 'Contact Card' }]
+    var [nameIndex, telIndex, mailIndex, noteIndex] = [link.indexOf(':N:'), link.indexOf(';TEL:'), link.indexOf(';EMAIL:'), link.indexOf(';NOTE:')]
+    if (nameIndex > 0) {
+        let name = link.substring(nameIndex + 3, link.indexOf(';'))
+        data.push({ text: 'Name:', data: name })
+    }
+    if (telIndex > 0) {
+        let tel = link.substring(telIndex + 5, link.indexOf(';', telIndex + 5))
+        data.push({ text: 'Phone:', data: tel })
+    }
+    if (mailIndex > 0) {
+        let mail = link.substring(mailIndex + 7, link.indexOf(';', mailIndex + 7))
+        data.push({ text: 'Email:', data: mail })
+    }
+    if (noteIndex > 0) {
+        let note = link.substring(noteIndex + 6, link.indexOf(';', noteIndex + 6))
+        data.push({ text: ':', data: note })
+    }
+    return data
+}
+
+const handleSMS = (link: string) => {
+    var data = [{ text: 'Raw Decode: ', data: link }, { text: 'Type: ', data: 'Short Message Service' }]
+    var a = link.split(':', 3)
+    if (a[1] !== '') data.push({ text: 'Number:', data: a[1] })
+    if (a[2] !== '') data.push({ text: 'Body:', data: a[2] })
+    return data
+}
+
+const handleTel = (link: string) => {
+    return [{ text: 'Raw Decode:', data: link }, { text: 'Type: ', data: 'Phone Number' }, { text: 'Number:', data: link.split(':')[1] }]
+}
+
+const handleEmail = (link: string) => {
+    var data = [{ text: 'Raw Decode:', data: link }, { text: 'Type: ', data: 'Email' }]
+    var [mailIndex, subIndex, bodyIndex] = [link.indexOf('mailto:'), link.indexOf('?subject='), link.indexOf('body=')]
+
+    const email = link.substring(mailIndex + 7, link.indexOf('?'))
+    data.push({ text: 'Email:', data: email })
+
+    const subject = link.substring(subIndex + 9, link.indexOf('&', subIndex + 8))
+    if (subject.length > 0) data.push({ text: 'Subject:', data: decodeURI(subject) })
+
+    const body = link.substring(bodyIndex + 5)
+    if (body.length > 0) data.push({ text: 'Body:', data: decodeURI(body) })
+    console.debug(decodeURI(body))
+
+    return data
+}
+
+const handleWIFI = (link: string) => {
+    var data = [{ text: 'Raw Decode:', data: link }, { text: 'Type: ', data: 'WiFi' }]
+    var [authIndex, sIndex, pIndex] = [link.indexOf(':T:'), link.indexOf('S:'), link.indexOf(';P:')]
+    if (authIndex > 0) {
+        const auth = link.substring(authIndex + 3, sIndex - 1)
+        data.push({ text: 'Authentication:', data: auth })
+    }
+    if (sIndex > 0) {
+        const ssid = link.substring(sIndex + 2, link.indexOf(';', sIndex + 2))
+        data.push({ text: 'Router:', data: ssid })
+    }
+    if (pIndex > 0) {
+        const password = link.substring(pIndex + 3, link.indexOf(';', pIndex + 3))
+        data.push({ text: 'Password', data: password })
+    }
+    return data
+}
+
+// Handles [Bitlinks, URL's, MeCard, Phone Number, SMS, Email, WiFi, Text]
+// All other types ei [vCard, Event, SEPA, ...etc] will display as raw text
+const handleQR = async (link: string): Promise<linkInfo[]> => {
+    if (link.startsWith('http')) {
+        const x = new URL(link)
+
+        var response = await axios.get(`${googleDNS}?name=${x.hostname}`);
+
+        for (let obj of response.data[`Answer`]) {
+            if (bitlyAddresses.includes(obj[`data`])) {
+                const bitlink = `${x.host}${x.pathname}`
+                return handleBitlink(bitlink)
+            }
+        }
+        return [{ text: 'QR Link to ', data: link }]
+    }
+    if (link.toLowerCase().startsWith('mecard')) return handleMECARD(link)
+    if (link.toLowerCase().startsWith('tel')) return handleTel(link)
+    if (link.toLowerCase().startsWith('smsto')) return handleSMS(link)
+    if (link.toLowerCase().startsWith('mailto')) return handleEmail(link)
+    if (link.toLowerCase().startsWith('wifi')) return handleWIFI(link)
+    return [{ text: 'Raw Decode: ', data: link }]
+}
 
 type RootStackParamList = {
-    Info: {qrURL: string};
+    Info: { qrURL: string };
     Home: undefined;
 };
 
@@ -55,16 +157,20 @@ export default function Info({ route, navigation }: Props) {
     const [bitlinkInfo, setBitlinkInfo] = useState<Array<linkInfo>>([])
 
     useEffect(() => {
-        handleBitlink(props.qrURL)
-        .then(data => setBitlinkInfo(data))
+        handleQR(props.qrURL)
+            .then(data => setBitlinkInfo(data))
     }, [])
 
 
     return (
         <View style={styles.container}>
-            {bitlinkInfo.map(e => <Text key={e.text}>{e.text} {e.data}</Text>)}
+            {bitlinkInfo.map(e => (
+                e.text === 'Sharable Report:'
+                    ? (<Text key={`k-${e.text}`}>{e.text} <Text onPress={() => Linking.openURL(e.data)}>{e.data}</Text></Text>) :
+                    <Text key={`k-${e.text}`}>{e.text} {e.data}</Text>
+            ))}
             <Button
-                title="Return to Home"
+                title='Return to Home'
                 onPress={() => navigation.navigate('Home')}
             />
         </View>
