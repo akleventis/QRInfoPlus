@@ -211,12 +211,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Info'>;
 function Bitlink(bitlinkInfo: QRInfo) {
     return (
         <View>
-<<<<<<< HEAD
-            <Text>Bitlink: {bitlinkInfo.Bitlink}</Text>
-            {bitlinkInfo.RawDecode && <Text onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>Open Link</Text>}
-            <Text>Expanded URL: {bitlinkInfo.LongURL}</Text>
-            <Text>Created On: {bitlinkInfo.Created}</Text>
-=======
 
             <Text style={styles.info_title}>Bitlink</Text>
             <View style={styles.info_c}>
@@ -237,7 +231,6 @@ function Bitlink(bitlinkInfo: QRInfo) {
                 <Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>🔗 Follow Link 🔗</Text>
             </View>
 
->>>>>>> 65380c9 (styles)
         </View>
     )
 }
@@ -377,18 +370,6 @@ export default function Info({ route, navigation }: Props) {
                 {bitlinkInfo.Type === 'Email' && Email(bitlinkInfo)}
                 {bitlinkInfo.Type === 'Wifi' && Wifi(bitlinkInfo)}
 
-<<<<<<< HEAD
-                {bitlinkInfo.CTALink && <Text onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text>}
-            </View>
-            {auth.accessToken === "" && <Button
-                title="Connect your Bitly Account"
-                onPress={() => navigation.navigate('Login')} />}
-            <Button
-                title='Return to Home'
-                onPress={() => navigation.navigate('Home')}
-            />
-            <ErrorOverlay />
-=======
                 {bitlinkInfo.CTA && 
                 <View  style={[styles.info_c, styles.link_c]}><Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text></View>}
                 {bitlinkInfo.Error && <View style={styles.info_c}><Text style={styles.info_data}>{bitlinkInfo.Error} hi</Text></View>}
@@ -398,7 +379,7 @@ export default function Info({ route, navigation }: Props) {
             <Button color='white' title='Return to Home' onPress={() => navigation.navigate('Home')} />
             </View>
             <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
->>>>>>> 65380c9 (styles)
+            <ErrorOverlay />
         </View>
     );
 }

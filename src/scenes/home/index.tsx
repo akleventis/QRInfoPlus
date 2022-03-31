@@ -35,19 +35,6 @@ export default function Home({ navigation }: Props) {
                 color='white'
                 title="Connect your Bitly Account"
                 onPress={() => navigation.navigate('Login')}
-<<<<<<< HEAD
-            />}
-            {auth.accessToken !== '' && <Text>Hello {auth.login}, your Bitly account is connected!</Text>}
-            {auth.accessToken !== '' && <Button
-                title="Disconnect"
-                onPress={() => dispatch(disconnect())}
-            />}
-            <Button
-                title="Scan QR Code"
-                onPress={() => navigation.navigate('Scan')}
-            />
-            <ErrorOverlay />
-=======
             /></View>}
             {auth.accessToken !== '' && <View style={styles.auth_container}><Text style={styles.auth_text}>Hello {auth.login}, your Bitly account is connected! 🥳</Text></View>}
             {auth.accessToken !== '' && <View style={styles.button}><Button color='white' title="Disconnect" onPress={() => dispatch(disconnect())} /></View>}
@@ -55,7 +42,7 @@ export default function Home({ navigation }: Props) {
             <Button color='white' title="Scan QR Code" onPress={() => navigation.navigate('Scan')} />
             </View>
             <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
->>>>>>> 65380c9 (styles)
+            <ErrorOverlay />
         </View>
     );
 }
