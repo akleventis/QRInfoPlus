@@ -6,7 +6,7 @@ Super secret hack week project for QR Info+ page
 
 - Adding a '+' to the end of any bitly shows a preview of the redirect link
 
-- ***This mobile application creates an info+ page for Qr codes***
+- ***This mobile application renders an info+ page for Qr codes***
 
 Features
 ---
