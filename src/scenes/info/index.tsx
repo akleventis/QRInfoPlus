@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Button, Linking } from 'react-native';
+import { StyleSheet, Text, View, Button, Linking, Image } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import axios, { AxiosError } from 'axios'
 import { useTypedSelector } from '../../hooks/useTypeSelector'
@@ -110,6 +110,7 @@ const handleMECARD = (link: string) => {
         let note = link.substring(noteIndex + 6, link.indexOf(';', noteIndex + 6))
         data.Note = note
     }
+    console.debug(data)
     return data
 }
 
@@ -210,30 +211,70 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Info'>;
 function Bitlink(bitlinkInfo: QRInfo) {
     return (
         <View>
-            <Text>Bitlink: {bitlinkInfo.Bitlink}</Text>
-            {bitlinkInfo.RawDecode && <Text onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>Open Link</Text>}
-            <Text>Expanded URL: {bitlinkInfo.LongURL}</Text>
-            <Text>Created On: {bitlinkInfo.Created}</Text>
+
+            <Text style={styles.info_title}>Bitlink</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Bitlink}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Expanded URL</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.LongURL}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Created</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Created}</Text>
+            </View>
+
+            <View style={[styles.info_c, styles.link_c]}>
+                <Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>🔗 Follow Link 🔗</Text>
+            </View>
+
         </View>
     )
 }
 
 function MECard(bitlinkInfo: QRInfo) {
+
     return (
         <View>
-            <Text>Name: {bitlinkInfo.Name}</Text>
-            <Text>Phone Number: {bitlinkInfo.Phone}</Text>
-            <Text>Email Address: {bitlinkInfo.Email}</Text>
-            <Text>Notes: {bitlinkInfo.Note}</Text>
+            <Text style={styles.info_title}>Name</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Name}</Text>
+            </View>
+            
+            <Text style={styles.info_title}>Phone Number</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Phone}</Text>
+            </View>
+            
+            <Text style={styles.info_title}>Email Address</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Email}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Notes</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Note}</Text>
+            </View>
         </View>
     )
 }
 
 function SMS(bitlinkInfo: QRInfo) {
+    console.debug(bitlinkInfo)
     return (
         <View>
-            <Text>Phone Number: {bitlinkInfo.Phone}</Text>
-            <Text>Message Body: {bitlinkInfo.Body}</Text>
+            <Text style={styles.info_title}>Phone Number</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Phone}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Message Body</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Body}</Text>
+            </View>
         </View>
     )
 }
@@ -241,7 +282,10 @@ function SMS(bitlinkInfo: QRInfo) {
 function Tel(bitlinkInfo: QRInfo) {
     return (
         <View>
-            <Text>Phone Number: {bitlinkInfo.Phone}</Text>
+            <Text style={styles.info_title}>Phone Number</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Phone}</Text>
+            </View>
         </View>
     )
 }
@@ -249,9 +293,20 @@ function Tel(bitlinkInfo: QRInfo) {
 function Email(bitlinkInfo: QRInfo) {
     return (
         <View>
-            <Text>Email Address: {bitlinkInfo.Email}</Text>
-            <Text>Subject: {bitlinkInfo.Subject}</Text>
-            <Text>Body: {bitlinkInfo.Body}</Text>
+            <Text style={styles.info_title}>Email Address</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Email}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Subject</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Subject}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Body</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Body}</Text>
+            </View>
         </View>
     )
 }
@@ -259,9 +314,20 @@ function Email(bitlinkInfo: QRInfo) {
 function Wifi(bitlinkInfo: QRInfo) {
     return (
         <View>
-            <Text>Authentication: {bitlinkInfo.Authentication}</Text>
-            <Text>SSID: {bitlinkInfo.SSID}</Text>
-            <Text>Password: {bitlinkInfo.Password}</Text>
+            <Text style={styles.info_title}>Authentication</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Authentication}</Text>
+            </View>
+
+            <Text style={styles.info_title}>SSID</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.SSID}</Text>
+            </View>
+
+            <Text style={styles.info_title}>Password</Text>
+            <View style={styles.info_c}>
+                <Text style={styles.info_data}>{bitlinkInfo.Password}</Text>
+            </View>
         </View>
     )
 }
@@ -287,25 +353,32 @@ export default function Info({ route, navigation }: Props) {
     return (
         <View style={styles.container}>
             <View>
-                <Text>QR Code Type: {bitlinkInfo.Type}</Text>
-                <Text>Decoded data: {bitlinkInfo.RawDecode}</Text>
+                <Text style={styles.info_title}>QR Code Type</Text>
+                <View style={styles.info_c}>
+                    <Text style={styles.info_data}>{bitlinkInfo.Type}</Text>
+                </View>
+
+                <Text style={styles.info_title}>Decoded data</Text>
+                <View style={styles.info_c}>
+                    <Text style={styles.info_data}>{bitlinkInfo.RawDecode}</Text>
+                </View>
 
                 {bitlinkInfo.Type === 'Bitly URL' && Bitlink(bitlinkInfo)}
-                {bitlinkInfo.Type === 'Contact Cart' && MECard(bitlinkInfo)}
+                {bitlinkInfo.Type === 'Contact Card' && MECard(bitlinkInfo)}
                 {bitlinkInfo.Type === 'SMS' && SMS(bitlinkInfo)}
                 {bitlinkInfo.Type === 'Phone Number' && Tel(bitlinkInfo)}
                 {bitlinkInfo.Type === 'Email' && Email(bitlinkInfo)}
                 {bitlinkInfo.Type === 'Wifi' && Wifi(bitlinkInfo)}
 
-                {bitlinkInfo.CTALink && <Text onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text>}
+                {bitlinkInfo.CTA && 
+                <View  style={[styles.info_c, styles.link_c]}><Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text></View>}
+                {bitlinkInfo.Error && <View style={styles.info_c}><Text style={styles.info_data}>{bitlinkInfo.Error} hi</Text></View>}
             </View>
-            {auth.accessToken === "" && <Button
-                title="Connect your Bitly Account"
-                onPress={() => navigation.navigate('Login')} />}
-            <Button
-                title='Return to Home'
-                onPress={() => navigation.navigate('Home')}
-            />
+            {auth.accessToken === "" && <View style={styles.button}><Button color='white' title="Connect your Bitly Account" onPress={() => navigation.navigate('Login')} /></View>}
+            <View style={styles.button}>
+            <Button color='white' title='Return to Home' onPress={() => navigation.navigate('Home')} />
+            </View>
+            <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
             <ErrorOverlay />
         </View>
     );
@@ -314,8 +387,49 @@ export default function Info({ route, navigation }: Props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#2b3d4b',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    info_c: {
+        backgroundColor: '#172e41',
+        maxWidth: 300,
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 25,
+        marginTop: 5,
+        display: 'flex',
+        alignItems: 'center',
+        shadowOffset:{  width: 10,  height: 10,  },
+        shadowColor: 'black',
+        shadowOpacity: 2.0,
+    },
+    info_title:{
+        fontFamily: 'Optima',
+        color: '#ffff',
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    info_data: {
+        fontFamily: 'American Typewriter',
+        color: '#ffff',
+        textAlign: 'center',
+        fontSize: 15,
+    },
+    link_c: {
+        backgroundColor: '#234663',
+    },
+    link: {
+        fontFamily: 'American Typewriter',
+        color: '#ffff',
+        fontSize: 15,
+    },
+    button: {
+        borderRadius: 5,
+        borderWidth: 2,
+        borderColor: '#ee6124',
+        width: 250,
+        margin: 10,
+        backgroundColor: '#172e41',
+      },
 });

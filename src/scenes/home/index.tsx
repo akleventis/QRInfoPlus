@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTypedSelector } from '../../hooks/useTypeSelector'
 import { useDispatch } from 'react-redux';
@@ -31,19 +31,17 @@ export default function Home({ navigation }: Props) {
 
     return (
         <View style={styles.container}>
-            {auth.accessToken === '' && <Button
+            {auth.accessToken === '' && <View style={styles.button}><Button
+                color='white'
                 title="Connect your Bitly Account"
                 onPress={() => navigation.navigate('Login')}
-            />}
-            {auth.accessToken !== '' && <Text>Hello {auth.login}, your Bitly account is connected!</Text>}
-            {auth.accessToken !== '' && <Button
-                title="Disconnect"
-                onPress={() => dispatch(disconnect())}
-            />}
-            <Button
-                title="Scan QR Code"
-                onPress={() => navigation.navigate('Scan')}
-            />
+            /></View>}
+            {auth.accessToken !== '' && <View style={styles.auth_container}><Text style={styles.auth_text}>Hello {auth.login}, your Bitly account is connected! 🥳</Text></View>}
+            {auth.accessToken !== '' && <View style={styles.button}><Button color='white' title="Disconnect" onPress={() => dispatch(disconnect())} /></View>}
+            <View style={styles.button}>
+            <Button color='white' title="Scan QR Code" onPress={() => navigation.navigate('Scan')} />
+            </View>
+            <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
             <ErrorOverlay />
         </View>
     );
@@ -52,8 +50,25 @@ export default function Home({ navigation }: Props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#2b3d4b',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    auth_container: {
+        margin: 75,
+    },
+    auth_text:{
+        textAlign: 'center',
+        fontFamily: 'Optima',
+        fontSize: 25,
+        color: '#ffff',
+    },
+    button: {
+        borderRadius: 5,
+        borderWidth: 2,
+        borderColor: '#ee6124',
+        width: 250,
+        margin: 10,
+        backgroundColor: '#172e41',
+      },
 });
