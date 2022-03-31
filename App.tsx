@@ -18,6 +18,12 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={{
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#172e41',
+              }
+            }}
           />
           <Stack.Screen
             name="Login"
@@ -27,6 +33,12 @@ export default function App() {
           <Stack.Screen
             name="Scan"
             component={Scan}
+            options={{
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#172e41',
+              }
+            }}
           />
           <Stack.Screen
             name="Info"

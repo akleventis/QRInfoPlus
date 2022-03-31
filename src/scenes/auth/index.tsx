@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Image, View, Button } from 'react-native';
 import { useAuthRequest } from 'expo-auth-session';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CLIENT_ID } from '../../config/secrets';
@@ -47,14 +47,13 @@ export default function Login({ navigation }: Props) {
 
     return (
         <View style={styles.container}>
-            <Button
-                title="Connect"
-                onPress={() => promptAsync()}
-            />
-            <Button
-                title="Return Home"
-                onPress={() => navigation.navigate('Home')}
-            />
+            <View style={styles.button}>
+            <Button color='white' title="Connect" onPress={() => promptAsync()} />
+            </View>
+            <View style={styles.button}>
+            <Button color='white' title="Return Home" onPress={() => navigation.navigate('Home')} />
+            </View>
+            <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
             <ErrorOverlay />
         </View>
     );
@@ -63,8 +62,16 @@ export default function Login({ navigation }: Props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#2b3d4b',
         alignItems: 'center',
         justifyContent: 'center',
     },
+    button: {
+        borderRadius: 5,
+        borderWidth: 2,
+        borderColor: '#ee6124',
+        width: 250,
+        margin: 10,
+        backgroundColor: '#172e41',
+      },
 });
