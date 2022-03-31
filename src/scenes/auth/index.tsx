@@ -3,9 +3,10 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { useAuthRequest } from 'expo-auth-session';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CLIENT_ID } from '../../config/secrets';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { authorize } from '../../actions/actionCreators'
+import { authorize, setError } from '../../actions/actionCreators'
+import ErrorOverlay from '../../components/errorOverlay';
 
 type RootStackParamList = {
     Login: undefined;
@@ -27,10 +28,20 @@ export default function Login({ navigation }: Props) {
     }, discovery);
 
     useEffect(() => {
-        if (response?.type === "success") {
-            const { code } = response.params
-            dispatch(authorize(code))
-            navigation.navigate('Home')
+        switch (response?.type) {
+            case "success":
+                const { code } = response.params
+                dispatch(authorize(code))
+                navigation.navigate('Home')
+                break;
+            case "cancel":
+                dispatch(setError('Authorization Cancelled'))
+                navigation.navigate('Home')
+                break;
+            case "error":
+                dispatch(setError('Authorization Error'))
+                navigation.navigate('Home')
+                break;
         }
     }, [response])
 
@@ -44,6 +55,7 @@ export default function Login({ navigation }: Props) {
                 title="Return Home"
                 onPress={() => navigation.navigate('Home')}
             />
+            <ErrorOverlay />
         </View>
     );
 }

@@ -1,12 +1,15 @@
 
 import { StyleSheet, Text, View, Button, Linking } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useTypedSelector } from '../../hooks/useTypeSelector'
 import { URL } from 'react-native-url-polyfill';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Auth } from '../../reducers/authReducer';
+import ErrorOverlay from '../../components/errorOverlay';
+import { useDispatch } from 'react-redux';
+import { setError } from '../../actions/actionCreators';
 
 const googleDNS = `https://dns.google/resolve`
 const bitlyURL = `https://api-ssl.bitly.com/v4`
@@ -60,7 +63,6 @@ const handleBitlink = async (link: URL, auth: Auth): Promise<QRInfo> => {
         data.Error = 'Connect Bitly account to expand'
         return data
     }
-
     try {
         const resp = await axios.post(`${bitlyURL}/expand`, { 'bitlink_id': bitlink }, {
             headers: {
@@ -76,6 +78,10 @@ const handleBitlink = async (link: URL, auth: Auth): Promise<QRInfo> => {
         data.CTALink = `https://app.bitly.com/default/bitlinks/${hash}`
     } catch (err) {
         data.Error = 'There was an error expanding this link'
+        if (axios.isAxiosError(err)) {
+            data.Error = err.message
+        }
+        return data
     }
 
     return data
@@ -205,7 +211,7 @@ function Bitlink(bitlinkInfo: QRInfo) {
     return (
         <View>
             <Text>Bitlink: {bitlinkInfo.Bitlink}</Text>
-            <Text onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>Open Link</Text>
+            {bitlinkInfo.RawDecode && <Text onPress={() => Linking.openURL(bitlinkInfo.RawDecode)}>Open Link</Text>}
             <Text>Expanded URL: {bitlinkInfo.LongURL}</Text>
             <Text>Created On: {bitlinkInfo.Created}</Text>
         </View>
@@ -264,11 +270,18 @@ export default function Info({ route, navigation }: Props) {
     const props = route.params
     const [bitlinkInfo, setBitlinkInfo] = useState<QRInfo>({} as QRInfo)
     const { auth } = useTypedSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         handleQR(props.qrURL, auth)
             .then(data => setBitlinkInfo(data))
     }, [])
+
+    useEffect(() => {
+        if (bitlinkInfo.Error) {
+            dispatch(setError(bitlinkInfo.Error))
+        }
+    }, [bitlinkInfo.Error])
 
 
     return (
@@ -284,8 +297,7 @@ export default function Info({ route, navigation }: Props) {
                 {bitlinkInfo.Type === 'Email' && Email(bitlinkInfo)}
                 {bitlinkInfo.Type === 'Wifi' && Wifi(bitlinkInfo)}
 
-                {bitlinkInfo.CTA !== '' && <Text onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text>}
-                {bitlinkInfo.Error !== '' && <Text>{bitlinkInfo.Error}</Text>}
+                {bitlinkInfo.CTALink && <Text onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text>}
             </View>
             {auth.accessToken === "" && <Button
                 title="Connect your Bitly Account"
@@ -294,6 +306,7 @@ export default function Info({ route, navigation }: Props) {
                 title='Return to Home'
                 onPress={() => navigation.navigate('Home')}
             />
+            <ErrorOverlay />
         </View>
     );
 }
