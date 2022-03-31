@@ -110,7 +110,6 @@ const handleMECARD = (link: string) => {
         let note = link.substring(noteIndex + 6, link.indexOf(';', noteIndex + 6))
         data.Note = note
     }
-    console.debug(data)
     return data
 }
 
@@ -263,7 +262,6 @@ function MECard(bitlinkInfo: QRInfo) {
 }
 
 function SMS(bitlinkInfo: QRInfo) {
-    console.debug(bitlinkInfo)
     return (
         <View>
             <Text style={styles.info_title}>Phone Number</Text>
@@ -352,6 +350,7 @@ export default function Info({ route, navigation }: Props) {
 
     return (
         <View style={styles.container}>
+            <ErrorOverlay />
             <View>
                 <Text style={styles.info_title}>QR Code Type</Text>
                 <View style={styles.info_c}>
@@ -372,14 +371,13 @@ export default function Info({ route, navigation }: Props) {
 
                 {bitlinkInfo.CTA && 
                 <View  style={[styles.info_c, styles.link_c]}><Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.CTALink)}>{bitlinkInfo.CTA}</Text></View>}
-                {bitlinkInfo.Error && <View style={styles.info_c}><Text style={styles.info_data}>{bitlinkInfo.Error} hi</Text></View>}
             </View>
             {auth.accessToken === "" && <View style={styles.button}><Button color='white' title="Connect your Bitly Account" onPress={() => navigation.navigate('Login')} /></View>}
             <View style={styles.button}>
             <Button color='white' title='Return to Home' onPress={() => navigation.navigate('Home')} />
             </View>
             <Image style={{width: 30, height: 30, marginTop: 20}}source={require('../../assets/bitly.png')}/>
-            <ErrorOverlay />
+
         </View>
     );
 }
