@@ -1,7 +1,9 @@
 # Qr+ 
 <img src='https://user-images.githubusercontent.com/64287087/161136864-c150d2c0-b825-4791-9825-3fa6616eb49f.PNG' align="right" width='320px'/>
+
 Super secret hack week project for QR Info+ page
 ---
+
 - Adding a '+' to the end of any bitly shows a preview of the redirect link
 
 - ***This mobile application creates an info+ page for Qr codes***
