@@ -42,8 +42,13 @@ export default function App() {
           />
           <Stack.Screen
             name="Info"
-            options={{ headerShown: false }}
             component={Info}
+            options={{
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#172e41',
+              }
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

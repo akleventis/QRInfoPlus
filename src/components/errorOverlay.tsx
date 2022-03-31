@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         elevation: 999,
         alignItems: 'center',
         zIndex: 10000,
-        top: height - 240,
+        top: 20,
     },
     errorContent: {
         backgroundColor: 'red',

@@ -25,6 +25,7 @@ export default function Scan({ navigation }: Props) {
     const handleBarCodeScanned = ({ data }: {data: string}) => {
       setScanned(true);
       navigation.navigate('Info', {qrURL: data})
+      setScanned(false)
     };
 
 
@@ -38,7 +39,6 @@ export default function Scan({ navigation }: Props) {
           barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
           style={StyleSheet.absoluteFillObject}
         />
-        {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
       </View>
     );
   }
