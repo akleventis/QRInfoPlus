@@ -60,6 +60,7 @@ const handleBitlink = async (link: URL, auth: Auth): Promise<QRInfo> => {
         data.Error = 'Connect Bitly account to expand'
         return data
     }
+
     try {
         const resp = await axios.post(`${bitlyURL}/expand`, { 'bitlink_id': bitlink }, {
             headers: {
