@@ -33,5 +33,9 @@ Scope
 - Navigation and routing between multiple screens
 - Error Overlay
 
-
+Run Locally
+---
+- [ ] Download [Expo Go](https://apps.apple.com/us/app/expo-go/id982107779) in the App Store
+- [ ] Clone repo => `npm run start`
+- [ ] Scan QR code displayed in terminal
 
