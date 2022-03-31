@@ -5,6 +5,7 @@ import { useTypedSelector } from '../../hooks/useTypeSelector'
 import { useDispatch } from 'react-redux';
 import { disconnect, loadAuth } from '../../actions/actionCreators'
 import { useEffect } from 'react';
+import ErrorOverlay from '../../components/errorOverlay';
 
 
 
@@ -43,6 +44,7 @@ export default function Home({ navigation }: Props) {
                 title="Scan QR Code"
                 onPress={() => navigation.navigate('Scan')}
             />
+            <ErrorOverlay />
         </View>
     );
 }

@@ -53,3 +53,22 @@ export const disconnect = () => {
             })
     }
 }
+
+export const setError = (message: string) => {
+    return async (dispatch: Dispatch<Action>) => {
+        dispatch({
+            type: ActionType.ERROR_SET,
+            payload: {
+                message: message ? message : '',
+            }
+        })
+        setTimeout(() => {
+            dispatch({
+                type: ActionType.ERROR_SET,
+                payload: {
+                    message: '',
+                }
+            })
+        }, 5000)
+    }
+}
