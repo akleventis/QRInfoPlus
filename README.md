@@ -35,7 +35,19 @@ Scope
 
 Run Locally
 ---
+### preconfig
+- [ ] Open terminal in projects home directory '/QRInfoPlus' => `npm run client:config`
+- [ ] This will create the config/secrets.ts file
+- [ ] Add these two variables to the file and supply with your client id and secret which can be found here https://bitly.com/_admin/user_detail?username={yourusername}
+```
+export const CLIENT_ID = "";
+export const CLIENT_SECRET = "";
+```
+
+### Run
+- [ ] Install Expo CLI `npm install --global expo-cli`
 - [ ] Download [Expo Go](https://apps.apple.com/us/app/expo-go/id982107779) in the App Store
-- [ ] Clone repo => `npm run start`
+- [ ] `npm i` 
+- [ ] `expo start`
 - [ ] Scan QR code displayed in terminal
 
