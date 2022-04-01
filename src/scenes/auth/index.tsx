@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { authorize, setError } from '../../actions/actionCreators'
 import ErrorOverlay from '../../components/errorOverlay';
+const styles = require('../../styles.tsx')
 
 type RootStackParamList = {
     Login: undefined;
@@ -58,20 +59,3 @@ export default function Login({ navigation }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2b3d4b',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        borderRadius: 5,
-        borderWidth: 2,
-        borderColor: '#ee6124',
-        width: 250,
-        margin: 10,
-        backgroundColor: '#172e41',
-      },
-});

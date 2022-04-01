@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { disconnect, loadAuth } from '../../actions/actionCreators'
 import { useEffect } from 'react';
 import ErrorOverlay from '../../components/errorOverlay';
-
+const styles = require('../../styles.tsx')
 
 
 type RootStackParamList = {
@@ -46,29 +46,3 @@ export default function Home({ navigation }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2b3d4b',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    auth_container: {
-        margin: 75,
-    },
-    auth_text:{
-        textAlign: 'center',
-        fontFamily: 'Optima',
-        fontSize: 25,
-        color: '#ffff',
-    },
-    button: {
-        borderRadius: 5,
-        borderWidth: 2,
-        borderColor: '#ee6124',
-        width: 250,
-        margin: 10,
-        backgroundColor: '#172e41',
-      },
-});

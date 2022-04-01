@@ -10,6 +10,7 @@ import { Auth } from '../../reducers/authReducer';
 import ErrorOverlay from '../../components/errorOverlay';
 import { useDispatch } from 'react-redux';
 import { setError } from '../../actions/actionCreators';
+const styles = require('../../styles.tsx')
 
 const googleDNS = `https://dns.google/resolve`
 const bitlyURL = `https://api-ssl.bitly.com/v4`
@@ -381,53 +382,3 @@ export default function Info({ route, navigation }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2b3d4b',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    info_c: {
-        backgroundColor: '#172e41',
-        maxWidth: 300,
-        borderRadius: 10,
-        padding: 10,
-        marginBottom: 25,
-        marginTop: 5,
-        display: 'flex',
-        alignItems: 'center',
-        shadowOffset:{  width: 10,  height: 10,  },
-        shadowColor: 'black',
-        shadowOpacity: 2.0,
-    },
-    info_title:{
-        fontFamily: 'Optima',
-        color: '#ffff',
-        fontSize: 20,
-        textAlign: 'center',
-    },
-    info_data: {
-        fontFamily: 'American Typewriter',
-        color: '#ffff',
-        textAlign: 'center',
-        fontSize: 15,
-    },
-    link_c: {
-        backgroundColor: '#234663',
-    },
-    link: {
-        fontFamily: 'American Typewriter',
-        color: '#ffff',
-        fontSize: 15,
-    },
-    button: {
-        borderRadius: 5,
-        borderWidth: 2,
-        borderColor: '#ee6124',
-        width: 250,
-        margin: 10,
-        backgroundColor: '#172e41',
-      },
-});
