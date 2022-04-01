@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-
+const styles = require('../../styles.tsx')
 
 type RootStackParamList = {
     Scan: undefined;
@@ -42,12 +42,3 @@ export default function Scan({ navigation }: Props) {
       </View>
     );
   }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
