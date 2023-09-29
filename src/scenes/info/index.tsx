@@ -2,13 +2,12 @@
 import { StyleSheet, Text, View, Button, Linking, Image } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import axios, { AxiosError } from 'axios'
-import { useTypedSelector } from '../../hooks/useTypeSelector'
+import { useAppSelector, useAppDispatch } from '../../hooks/hooks'
 import { URL } from 'react-native-url-polyfill';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Auth } from '../../reducers/authReducer';
 import ErrorOverlay from '../../components/errorOverlay';
-import { useDispatch } from 'react-redux';
 import { setError } from '../../actions/actionCreators';
 const styles = require('../../styles.tsx')
 
@@ -334,8 +333,8 @@ function Wifi(bitlinkInfo: QRInfo) {
 export default function Info({ route, navigation }: Props) {
     const props = route.params
     const [bitlinkInfo, setBitlinkInfo] = useState<QRInfo>({} as QRInfo)
-    const { auth } = useTypedSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { auth } = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         handleQR(props.qrURL, auth)

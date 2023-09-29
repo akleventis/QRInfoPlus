@@ -1,8 +1,7 @@
 
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useTypedSelector } from '../../hooks/useTypeSelector'
-import { useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks/hooks'
 import { disconnect, loadAuth } from '../../actions/actionCreators'
 import { useEffect } from 'react';
 import ErrorOverlay from '../../components/errorOverlay';
@@ -19,8 +18,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 
 export default function Home({ navigation }: Props) {
-    const { auth } = useTypedSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { auth } = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         // attempt to load auth info from secure store

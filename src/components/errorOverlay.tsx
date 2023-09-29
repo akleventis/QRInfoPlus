@@ -1,11 +1,11 @@
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
-import { useTypedSelector } from '../hooks/useTypeSelector'
+import { useAppSelector } from '../hooks/hooks'
 
 const { height } = Dimensions.get('window');
 
 
 export default function ErrorOverlay() {
-    const { error } = useTypedSelector((state) => state.error);
+    const { error } = useAppSelector((state) => state.error);
     return (
         <View style={styles.errorContainer}>
             <Text style={error.message ? styles.errorContent : {}}>{error.message}</Text>

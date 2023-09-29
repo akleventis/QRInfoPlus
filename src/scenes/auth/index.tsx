@@ -4,7 +4,7 @@ import { useAuthRequest } from 'expo-auth-session';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CLIENT_ID } from '../../config/secrets';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../hooks/hooks';
 import { authorize, setError } from '../../actions/actionCreators'
 import ErrorOverlay from '../../components/errorOverlay';
 const styles = require('../../styles.tsx')
@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 
 export default function Login({ navigation }: Props) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const discovery = {
         authorizationEndpoint: "https://bitly.com/oauth/authorize",
     };
