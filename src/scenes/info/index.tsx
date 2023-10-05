@@ -194,7 +194,7 @@ export default function Info({ route, navigation }: Props) {
                     {bitlinkInfo.type === 'Wifi' && Wifi(bitlinkInfo)}
 
                     {bitlinkInfo.cta_link && 
-                    <View  style={[styles.info_c, styles.link_c]}><Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.cta_link)}>Open in Bitly</Text></View>}
+                    <View  style={[styles.info_c, styles.link_c]}><Text style={styles.link} onPress={() => Linking.openURL(bitlinkInfo.cta_link)}>Open in Bitly, {bitlinkInfo.cta_link}</Text></View>}
                 </View>
                 {auth.accessToken === "" && <View style={styles.button}><Button color='white' title="Connect your Bitly Account" onPress={() => navigation.navigate('Login')} /></View>}
                 <View style={styles.button}>

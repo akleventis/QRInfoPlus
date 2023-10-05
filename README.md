@@ -18,39 +18,53 @@ Features
 	- 📱 SMS
 	- 📞 Phone Number
 	- 📶 WiFi
-  - 📝 Text
-- Options to follow (and retain click metrics)
-- Open in Bitly to view link in web app if you own the link
+  	- 📝 Text
+
+Default Router
+---
+  - Decodes QR codes client-side (in React app)
+  - If sign in and qr code points to a bitly link, a request to /expand is made
+	- Returns additional data (Bitlink, Expanded URL, Created Date)
+
+Bitly Router 
+---
+  - User must be authenticated
+  - Routes to bitly.net (staging environment) and decodes QR codes using v4_public_api's `POST /v4/qrcodes/decode`
+	- Returns additional data (Bitlink, Expanded URL, Created Date)	along with:
+      - Brand GUID & Redirect link to open details in bitly.com if the current user owns the bitlink `https://app.bitly.com/default/bitlinks/{hash}` 
 
 Scope
 ---
 - Support for both iOS and Android from one shared codebase
-- Typescript for strict typing
 - Secure storage for user API access token
 	- Keychain service on iOS
 	- Encrypted SharedPreferences on Androi
 - Global state management with Redux
-- Navigation and routing between multiple screens
-- Error Overlay
+
 
 Run Locally
 ---
 ### preconfig
+- [ ] `git clone https://github.com/akleventis/QRInfoPlus.git`
+- [ ] Register an OAuth application https://app.bitly.com/settings/api/oauth/
+  - Application name: `QRInfo+`
+  - Application link: https://github.com/akleventis/QRInfoPlus
+  - Redirect URIs: `exp://127.0.0.1:19000/`
+  - Application description: `Mobile QR Code Decoder`
+- [ ] Copy the generated `Client ID` and `Client Secret` values
 - [ ] Open terminal in projects home directory '/QRInfoPlus' => `npm run client:config`
-- [ ] This will create the config/secrets.ts file
-- [ ] Add these two variables to the file and supply with your client id and secret which can be found here https://bitly.com/_admin/user_detail?username={yourusername}
+- [ ] This will create the .env file
+- [ ] Add these two variables to the file
 ```
-export const ENV = "prod"; // prod || dev
-export const CLIENT_ID_PROD = "";
-export const CLIENT_SECRET_PROD = "";
-export const CLIENT_ID_DEV = "";
-export const CLIENT_SECRET_DEV = "";
+EXPO_PUBLIC_ENV = "staging" // staging || prod
+EXPO_PUBLIC_CLIENT_ID = ""
+EXPO_PUBLIC_CLIENT_SECRET = ""
+EXPO_PUBLIC_REDIRECT_URI = "exp://127.0.0.1:19000/"
 ```
 
 ### Run
 - [ ] Install Expo CLI `npm install --global expo-cli`
 - [ ] Download [Expo Go](https://apps.apple.com/us/app/expo-go/id982107779) in the App Store
-- [ ] `npm i` 
-- [ ] `expo start`
+- [ ] `sudo npm i` 
+- [ ] `npm run start`
 - [ ] Scan QR code displayed in terminal
-
