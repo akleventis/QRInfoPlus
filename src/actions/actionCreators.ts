@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { ActionType, Action } from './actionTypes';
+import { ActionType, Action, RouterType } from './actionTypes';
 import { getItemAsync, setItemAsync, deleteItemAsync } from 'expo-secure-store';
 import { getAccessToken } from '../api/client';
 
@@ -70,5 +70,20 @@ export const setError = (message: string) => {
                 }
             })
         }, 5000)
+    }
+}
+export const setBitlyRouter = () => {
+    return async (dispatch: Dispatch<Action>) => {
+        dispatch({
+            type: RouterType.BITLY_V4,
+        })
+    }
+}
+
+export const setDefaultRouter = () => {
+    return async (dispatch: Dispatch<Action>) => {
+        dispatch({
+            type: RouterType.DEFAULT,
+        })
     }
 }

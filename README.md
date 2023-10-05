@@ -40,8 +40,11 @@ Run Locally
 - [ ] This will create the config/secrets.ts file
 - [ ] Add these two variables to the file and supply with your client id and secret which can be found here https://bitly.com/_admin/user_detail?username={yourusername}
 ```
-export const CLIENT_ID = "";
-export const CLIENT_SECRET = "";
+export const ENV = "prod"; // prod || dev
+export const CLIENT_ID_PROD = "";
+export const CLIENT_SECRET_PROD = "";
+export const CLIENT_ID_DEV = "";
+export const CLIENT_SECRET_DEV = "";
 ```
 
 ### Run

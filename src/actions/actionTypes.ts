@@ -8,6 +8,11 @@ export enum ActionType {
     ERROR_SET = 'ERROR_SET',
 }
 
+export enum RouterType {
+    BITLY_V4 = 'BITLY_V4',
+    DEFAULT = 'DEFAULT',
+}
+
 interface actionAuthConnect {
     type: ActionType.AUTH_CONNECT;
     payload: Auth;
@@ -22,4 +27,11 @@ interface actionErrorSet {
     payload: Error
 }
 
-export type Action = actionAuthConnect | actionAuthDisconnect | actionErrorSet;
+interface routerV4 {
+    type: RouterType.BITLY_V4
+}
+interface routerDefault {
+    type: RouterType.DEFAULT
+}
+
+export type Action = actionAuthConnect | actionAuthDisconnect | actionErrorSet | routerV4 | routerDefault;

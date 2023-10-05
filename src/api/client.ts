@@ -1,19 +1,21 @@
-import { CLIENT_ID, CLIENT_SECRET } from '../config/secrets';
-
+import { getBitlyAPIURL } from "../lib/helpers"
 
 export const getAccessToken = async (code: string) => {
+    const bitlyAPIUrl = getBitlyAPIURL()
+
     let form = {
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET, // TODO: store this more securely?
+        'client_id': process.env.EXPO_PUBLIC_CLIENT_ID ?? "",
+        'client_secret': process.env.EXPO_PUBLIC_CLIENT_SECRET ?? "",
         'code': code,
-        'redirect_uri': 'exp://127.0.0.1:19000/',
+        'redirect_uri': process.env.EXPO_PUBLIC_REDIRECT_URI ?? "",
     }
 
     const formBody = Object.entries(form).map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value)).join('&')
-
+    console.log("requestURI: ", `${bitlyAPIUrl}/oauth/access_token`)
+    console.log("FORM body: ", formBody)
     let data
     try {
-        const response = await fetch('https://api-ssl.bitly.com/oauth/access_token', {
+        const response = await fetch(`${bitlyAPIUrl}/oauth/access_token`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -22,6 +24,7 @@ export const getAccessToken = async (code: string) => {
             body: formBody
         })
         data = await response.json();
+        console.log("DATA: ", data)
         if (response.ok) {
             return data
         }

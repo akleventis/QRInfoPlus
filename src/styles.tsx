@@ -3,10 +3,16 @@ import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
     container: {
         color: '#ffff',
-        flex: 1,
         backgroundColor: '#2b3d4b',
         alignItems: 'center',
         justifyContent: 'center',
+        height: '100%',
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    scroll_container: {
+        flex: 1,
+        backgroundColor: '#2b3d4b',
     },
     button: {
         borderRadius: 5,
@@ -62,4 +68,10 @@ module.exports = StyleSheet.create({
         color: '#ffff',
         fontSize: 15,
     },
+    bitly_logo: {
+        width: 30, 
+        height: 30, 
+        marginTop: 10,
+        marginBottom: 10
+    }
 })

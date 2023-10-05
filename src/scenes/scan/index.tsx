@@ -6,7 +6,7 @@ const styles = require('../../styles.tsx')
 
 type RootStackParamList = {
     Scan: undefined;
-    Info: {qrURL: string};
+    Info: {rawText: string};
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Scan'>;
@@ -24,7 +24,7 @@ export default function Scan({ navigation }: Props) {
   
     const handleBarCodeScanned = ({ data }: {data: string}) => {
       setScanned(true);
-      navigation.navigate('Info', {qrURL: data})
+      navigation.navigate('Info', {rawText: data})
       setScanned(false)
     };
 
